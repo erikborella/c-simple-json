@@ -5,7 +5,7 @@ project(sjson C)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
 add_library(sjson STATIC
-    src/test.c
+    src/lexer.c
 )
 
 set_target_properties(sjson PROPERTIES
