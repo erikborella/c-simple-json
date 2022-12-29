@@ -22,5 +22,5 @@ target_link_directories(main PRIVATE ${CMAKE_SOURCE_DIR}/dist/)
 target_link_libraries(main sjson)
 
 set_target_properties(main PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/dist/
 )
