@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "test.h": "c"
+        "test.h": "c",
+        "span.h": "c",
+        "span_utils.h": "c",
+        "span": "c"
     }
 }

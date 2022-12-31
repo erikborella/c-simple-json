@@ -1,13 +1,14 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
+#include <stdbool.h>
 #include "span.h"
 
 enum JTokenType {
-    NUMBER,
+    INT,
+    FLOAT,
+    BOOLEAN,
     STRING,
-    TRUE_T,
-    FALSE_T,
     OPEN_SQUARE_BRACKETS,
     CLOSE_SQUARE_BRACKETS,
     OPEN_CURLY_BRACKETS,
@@ -20,7 +21,12 @@ enum JTokenType {
 
 typedef struct jToken {
     enum JTokenType type;
-    Span content;
+    union {
+        Span raw_content;
+        int int_content;
+        double float_content;
+        bool boolean_content;
+    } content;
 } JToken;
 
 #endif
