@@ -1,8 +1,8 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
+#include <stddef.h>
 #include <stdbool.h>
-#include "span.h"
 
 enum JTokenType {
     INT,
@@ -19,10 +19,21 @@ enum JTokenType {
     EOF_T,
 };
 
+typedef struct {
+    size_t line;
+    size_t column;
+} TokenPosition;
+
+typedef struct {
+    TokenPosition start;
+    TokenPosition end;
+} TokenLocation;
+
 typedef struct jToken {
     enum JTokenType type;
+    TokenLocation location;
     union {
-        Span raw_content;
+        char* string_content;
         int int_content;
         double float_content;
         bool boolean_content;
