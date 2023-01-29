@@ -6,8 +6,7 @@ project(sjson C)
 
 add_library(sjson STATIC
     src/lexer.c
-    src/utils/span_utils.c
-    src/utils/string_reader.c
+    src/utils/stringReader.c
 )
 
 target_include_directories(sjson PUBLIC ${CMAKE_SOURCE_DIR}/include/public)
