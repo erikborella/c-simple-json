@@ -16,7 +16,7 @@ enum JTokenType {
     COLON,
     COMMA,
     NULL_T,
-    EOF_T,
+    EOS_T,
 };
 
 typedef struct {
