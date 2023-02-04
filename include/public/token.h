@@ -32,7 +32,7 @@ typedef struct {
 typedef struct jToken {
     enum JTokenType type;
     TokenLocation location;
-    union {
+    union u_jTokenContent {
         char* string_content;
         int int_content;
         double float_content;

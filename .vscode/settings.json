@@ -3,6 +3,8 @@
         "test.h": "c",
         "span.h": "c",
         "span_utils.h": "c",
-        "span": "c"
+        "span": "c",
+        "lexer.h": "c",
+        "cctype": "c"
     }
 }

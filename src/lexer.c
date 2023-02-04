@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <stdarg.h>
+#include <string.h>
 
 #include "lexer.h"
 #include "utils/stringReader.h"
@@ -95,7 +96,7 @@ static JToken getNumber(Lexer* l) {
         return getIntNumber(l);
 }
 
-static JToken getString(Lexer* l) {
+static JToken getLiteral(Lexer* l) {
     // Checks for '' or "" in strings
     char stringGuard = stringReader_getCurrent(l->stringReader);
 
@@ -106,16 +107,42 @@ static JToken getString(Lexer* l) {
         stringGuard = 0;
     }
     
-    while (!stringReader_isEOS(l->stringReader) && ((stringGuard == 0 && !isspace(stringReader_getCurrent(l->stringReader))) || stringReader_getCurrent(l->stringReader) != stringGuard)) {
+    while (!stringReader_isEOS(l->stringReader) && 
+        ((stringGuard == 0 && !isspace(stringReader_getCurrent(l->stringReader)) && isalnum(stringReader_getCurrent(l->stringReader))) || 
+        (stringGuard != 0 && stringReader_getCurrent(l->stringReader) != stringGuard))) {
         stringReader_moveNext(l->stringReader);
     }
 
     TokenLocation location = stringReader_getLocation(l->stringReader);
-    char* content = stringReader_getSelected(l->stringReader);
+    char* stringContent = stringReader_getSelected(l->stringReader);
+
+    enum JTokenType type = STRING;
+    union u_jTokenContent content = { .string_content = stringContent };
+
+    // Check for literal constant values (true, false, null)
+    if (stringGuard == 0) {
+        if (strcmp(stringContent, "true") == 0) {
+            type = BOOLEAN;
+            content.boolean_content = true;
+        }
+        else if (strcmp(stringContent, "false") == 0) {
+            type = BOOLEAN;
+            content.boolean_content = false;
+        }
+        else if (strcmp(stringContent, "null") == 0) {
+            type = NULL_T;
+        }
+    }
+
+    // As we are no long need the string content of the lexeme for literal constants
+    // we can already free then
+    if (type != STRING) {
+        free(stringContent);
+    }
 
     JToken token = {
-        .type = STRING,
-        .content.string_content = content,
+        .type = type,
+        .content = content,
         .location = location
     };
 
@@ -125,7 +152,6 @@ static JToken getString(Lexer* l) {
     }
 
     return token;
-    
 }
 
 Lexer* lexer_init(const char* stringRef) {
@@ -191,7 +217,7 @@ JToken lexer_getNext(Lexer* l) {
                 if (isdigit(currentChar))
                     t = getNumber(l);
                 else if (isalpha(currentChar) || currentChar == '\'' || currentChar == '\"')
-                    t = getString(l);
+                    t = getLiteral(l);
                 else {
                     stringReader_moveNext(l->stringReader);
                     stringReader_ignoreSelected(l->stringReader);
